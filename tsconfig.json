@@ -16,6 +16,6 @@
       "node"
      ]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/api/cardCent.js", "src/api/cardCent.js", "src/utils/request.js", "src/utils/request.js", "src/utils/auth.js", "src/utils/auth.js", "src/utils/request.js", "src/utils/request.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -9,5 +9,5 @@ import router from './router/index'
 const app = createApp(App)
 
 app.use(router)
-
-createApp(App).use(Vant).mount('#app')
+app.use(Vant)
+app.mount('#app')

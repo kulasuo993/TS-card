@@ -1,6 +1,6 @@
 import router from '../router/index'
 import axios from 'axios'
-import CryptoJS from 'crypto-ts'
+import CryptoJS from 'crypto-js'
 import qs from 'qs'
 import { showToast } from 'vant'
 import { getToken, removeToken } from './auth'
@@ -21,8 +21,8 @@ service.interceptors.request.use(
       config.method.toLocaleLowerCase() === 'delete') {
       // 接口签名
       config.data['token'] = getToken() || 'login'
-      config.data['timestamp'] = Date.parse(new Date()) / 1000
-      const paramData = sortObjByASCII(config.data)
+      config.data['timestamp'] = Date.parse(new Date().toString()) / 1000
+      const paramData:any = sortObjByASCII(config.data)
       let sign = ''
       for (const item in paramData) {
         sign += `${item}=${paramData[item]}&`
@@ -94,7 +94,7 @@ service.interceptors.response.use(
  */
 const sortObjByASCII = function(params:any) {
   const keysArr = Object.keys(params).sort()
-  const sortObj = {}
+  const sortObj:any = {}
   for (const i in keysArr) {
     sortObj[keysArr[i]] = params[keysArr[i]]
   }

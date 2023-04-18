@@ -5,5 +5,9 @@
 </template>
 
 <script setup lang="ts">
-    import {apiCardList} from "../api/cardCent"
+    import {ref,onMounted} from 'vue'
+    // import {apiCardList} from "../api/cardCent"
+    onMounted(() => {
+      console.log(111)
+    })
 </script>

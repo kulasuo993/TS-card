@@ -80,6 +80,7 @@
    1.一个泛型
    2.多个泛型
    3.自定义泛型
+   4.extends
 
 
 
@@ -91,3 +92,37 @@
 
    tsconfig.ts
       配置"jsx": "preserve"
+
+   什么是jsx元素，什么是组件？
+      由class或function定义出来的叫组件，组件名必须大写
+      由jsx语法或React.createElement返回的结果叫jsx元素，jsx元素充当组件的视图模板
+
+   函数式组件:函数式组件是一种定义自身没有任何状态的组件的方式。它们很像纯函数,必须以大写字母打头.
+
+   两种方式：render函数、setup中返回
+
+   jsx元素: 嵌套表达式，必须使用{}包起来
+
+   插值:在JSX中使用单个括号来绑定文本插值
+   样式:
+      <div class={'btn'}></div>
+      <div class={{'btn-default': this.isDefault, 'btn-primary': this.isPrimary}}></div>
+      <div style={{color: 'red', fontSize: '14px'}}></div>
+
+   v-show: 支持
+   v-if: 不支持,可以采用三目运算
+   遍历:没有v-for,需要采用Js的方式来实现
+   v-bind: v-bind:data-index=xx 不支持
+   事件绑定:事件绑定需要在事件名称前端加上on前缀，原生事件添加nativeOn
+   父级元素包裹：也可以使用空标签<></>
+
+   props绑定:
+   emit传值：
+
+   插槽：
+
+
+# Vue-Vben-Admin
+   http://doc.vvbin.cn/guide/introduction.html#%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86
+
+   https://github.com/vbenjs/vue-vben-admin

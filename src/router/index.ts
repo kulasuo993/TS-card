@@ -25,7 +25,39 @@ const routes: Array<RouteRecordRaw> = [
         id: router.params.id ? Number(router.params?.id) : 0,
       };
     },
-  }
+  },
+  {
+    path: '/Cardframe',
+    name: 'Cardframe',
+    component: () => import('../views/Cardframe.vue'),
+    // props: (router) => {
+    //   return {
+    //     id: router.params.id ? Number(router.params?.id) : 0,
+    //   };
+    // },
+  },
+  {
+    path: '/ArtBook',
+    name: 'ArtBook',
+    component: () => import('../views/ArtBook.vue'),
+   
+    // props: (router) => {
+    //   return {
+    //     id: router.params.id ? Number(router.params?.id) : 0,
+    //   };
+    // },
+  },
+  {
+    path: '/Drawing/:id',
+    name: 'Drawing',
+    component: () => import('../views/Drawing.vue'),
+   
+    props: (router) => {
+      return {
+        id: router.params.id ? Number(router.params?.id) : 0,
+      };
+    },
+  },
 ]
 
 const router = createRouter({

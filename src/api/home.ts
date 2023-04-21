@@ -1,4 +1,4 @@
-import type { ImageList, ImageItem ,ImageInfo } from '@/api/model/homeModel';
+import type { ImageList, ImageItem ,ImageInfo , codeList , userInfo , picCreat} from '@/api/model/homeModel';
 import {request} from '@/utils/http';
 
 
@@ -7,7 +7,10 @@ enum Api {
   CardLike = '/app/carddiy/card/like',
   CardInfo = '/app/carddiy/card/info', //卡牌详情
   userCodelist = '/app/carddiy/user/code-list',
-  userpicGetConfig = '/app/carddiy/pic/get-config'
+  userpicGetConfig = '/app/carddiy/pic/get-config',
+  getUserInfo = '/app/carddiy/pic/get-user-info',
+  picCreat = '/app/carddiy/pic/create',
+  picTaskStatus = '/app/carddiy/pic/task-status'
 }
 
 export function ImageListApi(params: { page: number; page_size: number }) {
@@ -31,7 +34,7 @@ export function CardLikeApi(params: Pick<ImageItem, 'card_id'>) {
 }
 
 export function CardInfoApi(params: {card_id : number}) {
-  return request(
+  return request<ImageInfo>(
     {
       url: Api.CardInfo,
       method: 'POST',
@@ -41,7 +44,7 @@ export function CardInfoApi(params: {card_id : number}) {
 }
 
 export function userCodelistApi(params: {batch_id : number}) {
-  return request(
+  return request<codeList>(
     {
       url: Api.userCodelist,
       method: 'POST',
@@ -49,10 +52,39 @@ export function userCodelistApi(params: {batch_id : number}) {
     }
   );
 }
+
 export function userpicGetConfigApi(params: {batch_id : number}) {
   return request(
     {
       url: Api.userpicGetConfig,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
+export function getUserInfoApi(params: {batch_id : number}) {
+  return request<userInfo>(
+    {
+      url: Api.getUserInfo,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+export function picCreatApi(params: {batch_id : number}) {
+  return request<picCreat>(
+    {
+      url: Api.picCreat,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+export function picTaskStatusApi(params: {batch_id : number,task_id:any}) {
+  return request(
+    {
+      url: Api.picTaskStatus,
       method: 'POST',
       data: params,
     }

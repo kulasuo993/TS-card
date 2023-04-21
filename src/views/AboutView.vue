@@ -1,10 +1,8 @@
 <template>
   
   <div class="about">
-  
+    <back :msg=cardData.card_name></back>
     <div class="inner">
-        <back></back>
-      <p class="card_name">{{ cardData.card_name }}</p>
       <div class="top">
         <van-image
           width="2rem"
@@ -43,6 +41,7 @@
       required:true
     }
   })
+  console.log(props.id)
   const cardData = reactive<ImageInfo>({
     card_id: 0,
     nickname: '',
@@ -70,9 +69,7 @@
     console.log(cardData)
   }
   getData()
-  // timestampToTime(11111111)
 
-  console.log(cardData.created_at)
 </script>
 
 <style scoped>
@@ -83,7 +80,7 @@
 }
 .inner{
   width: 90%;
-  height: 100%;
+  margin-top: 90px;
   margin-left: 40px;
 }
 .top{
@@ -96,6 +93,7 @@
 .card_name{
   color: #FFFFFF;
   font-size: 15px;
+  margin-top: 89px;
 }
 .p{
   font-size: 13px;
@@ -117,14 +115,12 @@
 }
 .created_at{
   text-align: left;
-  margin-top: 30px;
+  /* margin-top: 30px; */
   font-size: 13px;
   color: #819CC5;
 }
 .describe{
   width: 100%;
-  height: 100%;
-  margin-top: 30px;
   border: 1px solid black;
   background: #293D5C;
 }

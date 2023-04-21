@@ -40,7 +40,7 @@
    router.push({
     name:'laboratory',
     params:{
-      token:'login_token=239795be-8890-47dc-b29b-aeff8fd0191c'
+      token:'login_token=11a5adcb-a569-4307-b5d4-1599046ae772'
     }
    })
   }

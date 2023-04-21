@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export type ImageItem = {
   card_id: number;
   img: string;
@@ -36,3 +38,24 @@ export type ImageInfo = {
   can_same_clause: number,
   can_del: number
 };
+
+export type codeList = {
+  used:Object,
+  unused:Object
+}
+
+export type userInfo = {
+  create_task_credits_score :number,
+  credits_score:number,
+  rebuild_task_credits_score:number,
+  task_in_progress:boolean,
+  transform_task_credits_score:number,
+}
+
+export type picCreat = {
+  batch_id :number,
+  task_words:string,
+  aspect_ratio:string,
+  lora_ids?:string,
+  task_img?:string
+}

@@ -1,26 +1,27 @@
 <template>
-  <div>
-    <van-icon name="arrow-left" @click="back" class="back"/>
+  <div class="abc">
+    <van-nav-bar
+        :title= msg
+        left-arrow
+        @click-left="onClickLeft"
+      fixed
+      />
   </div>
 </template>
  
 <script lang="ts" setup>
-import { defineComponent } from "vue";
- 
-import { useRouter } from "vue-router";
-
- 
-    //router是全局路由对象
-    let router = useRouter();
- 
-    let back = () => {
-      router.back();
-    };
- 
+  import {ref,defineProps} from 'vue'
+  const onClickLeft = () => history.back();
+  const props = defineProps(['msg'])
 </script>
  
 <style scoped>
-  .back{
+.abc{
+  --van-nav-bar-background:black;
+  --van-nav-bar-title-text-color:white;
+  --van-nav-bar-icon-color:white
+}
+  /* .back{
     width: 7px;
     height: 12px;
     color: #FFFFFF;
@@ -28,6 +29,6 @@ import { useRouter } from "vue-router";
     top: 50px;
     right: 330px;
     opacity: 1;
-  }
+  } */
 </style>
  

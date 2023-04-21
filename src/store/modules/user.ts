@@ -11,7 +11,7 @@ export const useUserStore = defineStore({
   id: 'app_user',
   state: (): UserState => ({
     // token
-    token: '239795be-8890-47dc-b29b-aeff8fd0191c',
+    token: '11a5adcb-a569-4307-b5d4-1599046ae772',
     appVersion: undefined,
     platform: undefined,
   }),

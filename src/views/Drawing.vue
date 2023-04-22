@@ -1,11 +1,16 @@
 <template>
   <div class="about">
       <back :msg=msg></back>
+    
       <div class="inner">
-        <!-- <img :src="data." alt=""> -->
-        <div v-for="item in List.pic_list">
+        <p class="num">当前剩余{{ userInfoList.credits_score }}积分</p>
+        <div :class="{hide:ishide === true}" class="box">
+          <p>完成任务预计需要1-3分钟 <br>正在努力绘图中...</p>
+        </div>
+        <div v-for="item in List.pic_list" class="img">
           <img :src=item.img alt="">
         </div>
+
       </div>
      
  
@@ -14,21 +19,28 @@
 </template>
 
 <script lang="ts" setup>
-  import {reactive,ref,onMounted} from 'vue'
+  import {reactive,ref} from 'vue'
   import { awaitWrap } from '@/utils/index';
-  import type { ImageInfo } from '@/api/model/homeModel';
-  import { picTaskStatusApi } from '@/api/home';
-  import {formatTimestamp} from '@/utils/filter'
+  import type { userInfo  } from '@/api/model/homeModel';
+  import { picTaskStatusApi , getUserInfoApi ,} from '@/api/home';
   import back from '@/components/back.vue'
   
   const msg = ref('绘制卡图')
   const timer = ref()
   const count = ref(1)
+  const ishide = ref(false)
   const props = defineProps({
     id:{
       type:Number,
       required:true
     }
+  })
+  const userInfoList:userInfo = reactive({
+    create_task_credits_score :1,
+    credits_score:1,
+    rebuild_task_credits_score:1,
+    task_in_progress:false,
+    transform_task_credits_score:1,
   })
   const List:any = reactive({
     task_id:1,
@@ -40,7 +52,8 @@
       status:true
     }
   })
-  console.log(List.pic_list.img)
+
+ 
   const picTaskStatus = async()=>{
     const queryState = reactive({batch_id :1,task_id:props.id});
     const [error, data] = await awaitWrap(picTaskStatusApi(queryState));
@@ -51,9 +64,9 @@
      if(data.task_status != 3){
       Verification()
      }else{
+      ishide.value = true
       Object.assign(List,data)
      }
-     console.log(List.pic_list)
   }
   picTaskStatus()
 
@@ -68,15 +81,20 @@
       }
     }, 1000);
   }
-
+  const getUserInfo = async()=>{
+    const queryState = reactive({batch_id :1});
+    const [error, data] = await awaitWrap(getUserInfoApi(queryState));
+    if (error || !data) {
+        return;
+    }
+    Object.assign(userInfoList,data)
+    console.log(userInfoList)
+  }
+  getUserInfo()
+  
 </script>
 
-<style scoped>
-/* html{
-  width: 100%;
-  height: 1500px;
-  background-color: #11151B;
-} */
+<style scoped lang="less">
 .about{
   width: 100%;
   height: 1500px;
@@ -88,113 +106,30 @@
   margin-left: 40px;
   margin-top: 90px;
 }
-.vcd{
-  margin-top: 30px;
-  width: 160px;
-  height: 60px;
-  background: linear-gradient(147deg, #74F193 0%, #40DFB6 100%);
+.num{
+  color: #2fd6cb;
+  width: 100%;
+  height: 100px;
   text-align: left;
-  display: block;
+  border-bottom: 5px solid #727476;
+  line-height: 120px;
+  font-size: 24px;
 }
-.btt{
- position: relative;
- top: -60px;
- left: 140px;
-}
-.button{
-  width: 160px;
-  height: 60px;
-  background: #364858;
-  margin-left: 20px;
-  color: #B3D4FF;
-}
-.p1{
- margin-top: -80px;
- color: #000000;
- font-weight: 800;
-}
-.btn1:nth-child(2){
-  margin-top: -70px;
-}
-.btn1{
-  width: 450px;
-  position: relative;
-  right: 40px;
+.img{
   margin-top: 50px;
 }
-.li{
-  margin-right: 200px;
+.box{
+  width: 100%;
+  height: 800px;
+  border: 1px dashed white;
+  margin-top: 30px;
+  p{
+    color: white;
+    display: block;
+    margin-top: 350px;
+  }
 }
-.x{
-  font-size: 50px;
-display: block;
-position: absolute;
-right: 50px;
-top: 50px;
-}
-.input{
-  color: #F4F7FD;
-  text-align: left;
-  margin-top: 20px;
-  font-size: 13px;
-}
-.abc{
-  position: relative;
-  width: 98%;
-  left: -30px;
-}
-.input1{
-  color: #90A6BA;
-  text-align: left;
-  margin-top: 20px;
-  font-size: 13px;
-  font-weight: 350;
-}
-.chineseLi{
-  width: 160px;
-  height: 50px;
-  background: #364858;
-  margin-left: 5px;
-  margin-top: 5px;
-  line-height: 45px;
-  float: left;
-  color: #B3D4FF;
-}
-.input2{
-  color: #F4F7FD;
-  text-align: left;
-  margin-top: 130px;
-  font-size: 23px;
-  font-weight: 500;
-}
-.ul2{
-  margin-left: -10px;
-}
-.li2{
-  float: left;
-  width: 220px;
-  margin-left: 5px;
-}
-
-.pic{
-  height: 100px;
-}
-
-.ul3{
-  margin-left: -10px;
-}
-.li3{
-  width: 215px;
-  height: 50px;
-  background: #364858;
-  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.5);
-  border-radius: 2px 2px 2px 2px;
-  border: 1px solid #536C82;
-  font-size: 22px;
-  line-height: 45px;
-  color: #B3D4FF;
-  float: left;
-  margin-left: 10px;
-  margin-top: 10px;
+.hide{
+  display: none;
 }
 </style>

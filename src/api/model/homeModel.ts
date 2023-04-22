@@ -59,3 +59,45 @@ export type picCreat = {
   lora_ids?:string,
   task_img?:string
 }
+
+export type myArtCollectionTotalList = {
+  pic_list_qty :number,
+  card_list_draft_qty:number,
+  card_list_publish_qty:number
+}
+
+export type MyListItem = {
+  pic_id : number,
+  img : string,
+  status : number ,
+  created_at : number,
+  pic_height?: number,
+  pic_width?: number,
+};
+
+export type MyList = {
+  rows: MyListItem[];
+  total: number;
+};
+export type SelfListItem = {
+  avatar?:string,
+  link_url?:string,
+  nickname?:string,
+  card_id: number,
+  img: string,
+  title: string ,
+  card_name: string,
+  words: string,
+  likes_number?: number,
+  review_status: number,
+  created_at:number,
+  reply_number?:number,
+  pic_height?: number,
+  pic_width?: number,
+  is_like?:number
+};
+
+export type SelfList = {
+  rows: SelfListItem[];
+  total: number;
+};

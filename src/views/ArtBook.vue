@@ -2,6 +2,72 @@
   <div class="about">
       <back :msg=msg></back>
       <div class="inner">
+        <div class="title">
+          <div class="btn_anniu" @click="change(0)" :class="{ newStyle:0===number}">
+            <p>素材库({{ totalList.pic_list_qty }})</p>
+          </div>
+          <div class="btn_anniu" @click="change(1)" :class="{ newStyle:1===number}">
+            <p>卡牌草稿箱({{ totalList.card_list_draft_qty }})</p>
+          </div>
+          <div class="btn_anniu" @click="change(2)" :class="{ newStyle:2===number}">
+            <p>已发布({{ totalList.card_list_publish_qty }})</p>
+          </div>
+        </div>
+          
+        <div class="box">
+            <div v-show='0===number'>
+              <van-pull-refresh
+                v-model="isLoading"
+                success-text="刷新成功"
+                @refresh="getData"
+              >
+              <van-list
+                  v-model:loading="listLoading"
+                  :finished="listFinished"
+                  finishedText='没有更多了哦~'
+                  @refresh="getData"
+                >
+                  <ul class="list" >
+                    <li v-for="(item,index) in picMyList" :key="index" >
+                      <van-image fit="contain" :src="item.img" class="pic" />
+                      <p class="name">{{ formatTimestamp(item.created_at) }}</p>
+                      <span class="tool"><van-icon name="delete-o"  @click="delCard(item.pic_id)"/></span>
+                    </li>
+                  </ul>
+                </van-list>
+              </van-pull-refresh>
+             
+            </div>
+          <div v-show='1===number'><p class="CardDraft" v-show="showPop">该类目下暂无作品~</p></div>
+          
+          <div v-show='2===number'>
+            <van-pull-refresh
+                v-model="isLoading1"
+                success-text="刷新成功"
+                @refresh="getAllList"
+            >
+            <p class="CardDraft" v-show="showPop1">该类目下暂无作品~</p>
+            <van-list
+              v-model:loading="listLoading1"
+              :finished="listFinished1"
+              finishedText='没有更多了哦~'
+              success-text="刷新成功"
+            >
+              <ul class="list2" >
+                <li v-for="(item,index) in GetSelfList" :key="index" >
+                  <van-image fit="contain" :src="item.img" class="pic" />
+                  <p class="title">{{ item.title }}</p>
+                  <p class="card_name">名称：<span>{{ item.card_name }}</span></p>
+                  <p class="words">关键词：<span>{{ item.words }}</span> </p>
+                  <p class="name">{{ formatTimestamp(item.created_at) }}</p>
+                </li>
+              </ul>
+            </van-list>
+            </van-pull-refresh>
+           
+          </div>
+        </div>
+        
       </div>
      
  
@@ -10,142 +76,275 @@
 </template>
 
 <script lang="ts" setup>
-  import {reactive,ref,onMounted} from 'vue'
+  import {reactive,ref,onMounted,onBeforeUnmount} from 'vue'
+  import { showConfirmDialog ,showNotify  } from 'vant';
   import { awaitWrap } from '@/utils/index';
-  import type { ImageInfo } from '@/api/model/homeModel';
-  import { userCodelistApi , userpicGetConfigApi } from '@/api/home';
+  import type { myArtCollectionTotalList , MyListItem ,SelfListItem} from '@/api/model/homeModel';
+  import { myArtCollectionTotalApi , picMyListApi , carSelfListApi , picDeleteApi} from '@/api/home';
   import {formatTimestamp} from '@/utils/filter'
   import back from '@/components/back.vue'
   
   const msg = ref('我的画集')
+  const number = ref(0)
+  const show = ref(false);
+  const totalList:myArtCollectionTotalList = reactive({
+    pic_list_qty :1,
+    card_list_draft_qty:1,
+    card_list_publish_qty:1
+  })
+  const change:any = (index:any)=>{
+    number.value = index
+  }
+  const getAllList = async()=>{
+    const queryState = reactive({batch_id :1});
+    const [error, data] = await awaitWrap(myArtCollectionTotalApi(queryState));
+    if (error || !data) {
+        return;
+    }
+   
+    isLoading1.value = false;
+    listFinished1.value = false;
+    
+    Object.assign(totalList,data)
+    console.log(totalList)
+    getData(true) //自定义事件
+    getSelfList(true)
+  }
+   getAllList()
 
 
+   onMounted(() => {
+    setTimeout(() => {
+      //设置定时器
+      getData(true) //自定义事件
+      getSelfList(true)
+    }, 1000);
+  });
+  
+   //第一页
+  const listLoading = ref(false); // 是否处于加载状态 默认不处于
+  const listFinished = ref(false); // 是否全部数据加载完成
+  const isLoading = ref(false);
+  const picMyList = reactive<MyListItem[]>([])
+   
+  const getData = async (isRefresh: boolean) => {
+    const queryState = reactive({ batch_id : 1 ,page: 1, page_size: totalList.pic_list_qty });
+    if (isRefresh) {
+      listLoading.value = true;
+    }
+
+    const [error, data] = await awaitWrap(picMyListApi(queryState));
+    if (error || !data) {
+      return;
+    }
+    if (queryState.page === 1) {
+      isLoading.value = false;
+      listFinished.value = false;
+    }
+    Object.assign(picMyList,data.rows)
+    if (picMyList.length === totalList.pic_list_qty) {
+      listFinished.value = true;
+      return;
+    }
+  };
+
+  const delCard = async (id:number) =>{
+    showConfirmDialog({
+      title: '是否执行删除操作',
+      message:
+        '删除后将无法恢复哦',
+      confirmButtonText:'确认删除',
+      cancelButtonText:'我再想想'
+    })
+    .then(() => {
+      delCard1(id)
+    })
+    .catch(() => {
+      showNotify({ type: 'primary', message: '取消删除' });
+    })
+    
+  }
+  const delCard1 = async (id:number) =>{
+    const queryState = reactive({ batch_id : 1 ,pic_id: id });
+    const [error, data] = await awaitWrap(picDeleteApi(queryState));
+    showNotify({ type: 'primary', message: '删除成功' });
+  }
+
+  //第二页
+  const showPop = ref(true)
+  //第三页
+  const listLoading1 = ref(false); // 是否处于加载状态 默认不处于
+  const listFinished1 = ref(false); // 是否全部数据加载完成
+  const isLoading1 = ref(false);
+  const showPop1 = ref(true)
+  const GetSelfList = reactive<SelfListItem[]>([])
+  const getSelfList = async (isRefresh: boolean) => {
+    const queryState = reactive({ card_status : 2 ,page: 1, page_size: totalList.card_list_publish_qty });
+    if (isRefresh) {
+      listLoading1.value = true;
+    }
+
+    const [error, data] = await awaitWrap(carSelfListApi(queryState));
+    if (error || !data) {
+      return;
+    }
+    if (queryState.page === 1) {
+      isLoading1.value = false;
+      listFinished1.value = false;
+    }
+    Object.assign(GetSelfList,data.rows)
+    showPop1.value = false
+    if (GetSelfList.length === totalList.card_list_publish_qty) {
+      listFinished1.value = true;
+      return;
+    }
+  };
 </script>
 
-<style scoped>
-/* html{
-  width: 100%;
-  height: 1500px;
-  background-color: #11151B;
-} */
+<style scoped lang="less">
+.newStyle{
+    border-bottom: 5px solid rgb(55, 245, 179);
+  }
 .about{
   width: 100%;
-  height: 1500px;
+  
   background-color: #11151B;
 }
 .inner{
-  width: 90%;
-  height: 100%;
+  width: 100%;
   margin-left: 40px;
   margin-top: 90px;
-}
-.vcd{
-  margin-top: 30px;
-  width: 160px;
-  height: 60px;
-  background: linear-gradient(147deg, #74F193 0%, #40DFB6 100%);
-  text-align: left;
-  display: block;
-}
-.btt{
- position: relative;
- top: -60px;
- left: 140px;
-}
-.button{
-  width: 160px;
-  height: 60px;
-  background: #364858;
-  margin-left: 20px;
-  color: #B3D4FF;
-}
-.p1{
- margin-top: -80px;
- color: #000000;
- font-weight: 800;
-}
-.btn1:nth-child(2){
-  margin-top: -70px;
-}
-.btn1{
-  width: 450px;
-  position: relative;
-  right: 40px;
-  margin-top: 50px;
-}
-.li{
-  margin-right: 200px;
-}
-.x{
-  font-size: 50px;
-display: block;
-position: absolute;
-right: 50px;
-top: 50px;
-}
-.input{
-  color: #F4F7FD;
-  text-align: left;
-  margin-top: 20px;
-  font-size: 13px;
-}
-.abc{
-  position: relative;
-  width: 98%;
-  left: -30px;
-}
-.input1{
-  color: #90A6BA;
-  text-align: left;
-  margin-top: 20px;
-  font-size: 13px;
-  font-weight: 350;
-}
-.chineseLi{
-  width: 160px;
-  height: 50px;
-  background: #364858;
-  margin-left: 5px;
-  margin-top: 5px;
-  line-height: 45px;
-  float: left;
-  color: #B3D4FF;
-}
-.input2{
-  color: #F4F7FD;
-  text-align: left;
-  margin-top: 130px;
-  font-size: 23px;
-  font-weight: 500;
-}
-.ul2{
-  margin-left: -10px;
-}
-.li2{
-  float: left;
-  width: 220px;
-  margin-left: 5px;
-}
-
-.pic{
-  height: 100px;
-}
-
-.ul3{
-  margin-left: -10px;
-}
-.li3{
-  width: 215px;
-  height: 50px;
-  background: #364858;
-  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.5);
-  border-radius: 2px 2px 2px 2px;
-  border: 1px solid #536C82;
-  font-size: 22px;
-  line-height: 45px;
-  color: #B3D4FF;
-  float: left;
-  margin-left: 10px;
-  margin-top: 10px;
+    .title{
+      width: 100%;
+      height: 100px;
+      .btn_anniu{
+        float: left;
+        width: 33%;
+          p{
+            font-size: 24px;
+            color: rgb(55, 245, 179);
+            padding-right: 50px;
+          }
+      }
+    }
+   
+  .btn_anniu:nth-child(1){
+    margin-left: -50px;
+  }
+  .btn_anniu:nth-child(2){
+    margin-left: 50px;
+  }
+  .list{
+    margin: 0 auto;
+    display: flex;
+    justify-content:flex-start;
+    flex-wrap: wrap;
+    margin-top: -20px;
+    li{
+      width: 344px;
+      height: 502px;
+      text-align: center;
+      border: 1px solid #ccc;
+      margin-left: 20px;
+      margin-top: 20px;
+      .pic{
+        width: 344px;
+        height: 344px;
+        margin: 14px auto 0px;
+      }
+     
+      .name{
+        font-size: 22px;
+        color: #e8c382;
+      }
+      .tool{
+        position: relative;
+        width: 600px;
+        height: 100px;
+        color: rgb(55, 245, 179);
+        right: 100px;
+        top: 20px;
+      }
+    }
+    li:nth-child(2n+1){
+      margin-left: -20px;
+    }
+  }
+  .list2{
+    li{
+      width: 100%;
+      height: 380px;
+      border-top: 1px dotted  white;
+    }
+    li:first-child{
+      border-top: 1px  white;
+    }
+    .pic{
+        width: 304px;
+        height: 304px;
+        margin-left: -550px;
+        margin-top: 30px;
+      }
+      .title{
+        width: 300px;
+        display: block;
+        font-size: 32px;
+        color: white;
+        position: relative;
+        top: -320px;
+        left: 230px;
+        text-align: left;
+      }
+      .card_name{
+        display: block;
+        font-size: 22px;
+        color: #5F7B93;
+        position: relative;
+        top: -350px;
+        right: 70px;
+        span{
+          color: rgb(165, 191, 230);
+        }
+      }
+      .words{
+        text-align: left;
+        width: 400px;
+        display: block;
+        font-size: 22px;
+        color: #5F7B93;
+        position: relative;
+        top: -340px;
+        left: 230px;
+        text-overflow: -o-ellipsis-lastline;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        span{
+          color: rgb(165, 191, 230);
+        }
+      }
+      .name{
+        display: block;
+        font-size: 22px;
+        color: #5F7B93;
+        position: relative;
+        top: -250px;
+        right: 50px;
+      }
+  }
+  .CardDraft{
+    font-size: 35px;
+    color: rgb(55, 245, 179);
+    background-color: #11151B;
+    width: 100%;
+    height: 1550px;
+  }
+  .box{
+    width: 100%;
+    margin-right: 500px;
+  }
 }
 </style>

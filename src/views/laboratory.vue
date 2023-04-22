@@ -329,7 +329,7 @@
     position: relative;
     text-align: left;
     right: 35px;
-    top: 6 0px;
+    top: 60px;
   }
  
   .input{

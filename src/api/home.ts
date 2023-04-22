@@ -1,4 +1,6 @@
-import type { ImageList, ImageItem ,ImageInfo , codeList , userInfo , picCreat} from '@/api/model/homeModel';
+import type { ImageList, ImageItem ,ImageInfo , 
+  codeList , userInfo , picCreat ,
+  myArtCollectionTotalList , MyList ,SelfList} from '@/api/model/homeModel';
 import {request} from '@/utils/http';
 
 
@@ -10,7 +12,11 @@ enum Api {
   userpicGetConfig = '/app/carddiy/pic/get-config',
   getUserInfo = '/app/carddiy/pic/get-user-info',
   picCreat = '/app/carddiy/pic/create',
-  picTaskStatus = '/app/carddiy/pic/task-status'
+  picTaskStatus = '/app/carddiy/pic/task-status',
+  myArtCollectionTotal = '/app/carddiy/user/my-art-collection-total',
+  picMyList = '/app/carddiy/pic/my-list',
+  carSelfList = '/app/carddiy/card/self-list',
+  picDelete = '/app/carddiy/pic/delete'
 }
 
 export function ImageListApi(params: { page: number; page_size: number }) {
@@ -85,6 +91,48 @@ export function picTaskStatusApi(params: {batch_id : number,task_id:any}) {
   return request(
     {
       url: Api.picTaskStatus,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
+//我的画集数量myArtCollectionTotal
+export function myArtCollectionTotalApi(params: {batch_id : number}) {
+  return request<myArtCollectionTotalList>(
+    {
+      url: Api.myArtCollectionTotal,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+//我的卡图列表 /app/carddiy/pic/my-list picMyList
+export function picMyListApi(params: {batch_id : number , page :number , page_size:number}) {
+  return request<MyList>(
+    {
+      url: Api.picMyList,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+//carSelfList 我的卡牌列表（草稿/已发布）
+export function carSelfListApi(params: {card_status : number , page :number , page_size:number}) {
+  return request<SelfList>(
+    {
+      url: Api.carSelfList,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
+//picDelete 删除卡图
+export function picDeleteApi(params: {batch_id : number , pic_id :number}) {
+  return request(
+    {
+      url: Api.picDelete,
       method: 'POST',
       data: params,
     }

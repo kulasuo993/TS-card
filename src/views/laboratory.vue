@@ -77,15 +77,16 @@
                 @click="proportion(item)"  
                 class="imgscale"
               >
-                <p>{{ item }}</p>
+                <p class="pook"></p>
+                <span>{{ item }}</span>
               </li>
             </ul> 
           </div>
-            <p class="span1"></p>
+            <!-- <p class="span1"></p>
             <p class="span2"></p>
             <p class="span3"></p>
             <p class="span4"></p>
-            <p class="span5"></p>
+            <p class="span5"></p> -->
 
 
       
@@ -419,9 +420,96 @@
   .box5{
     margin-top: 30px;
     width: 100%;
-    height: 50px;
+    height: 400px;
+    .ul4{
+      .imgscale{
+        width: 128px;
+        height: 128px;
+        background: #364858;
+        float: left;
+        margin-left: 7px;
+        margin-top: 20px;
+        
+          
+      }
+      li:nth-child(1){
+        .pook{
+          width: 60px;
+          height: 80px;
+          background: #B3D4FF;
+          margin: 20px auto 0;
+        }
+        span{
+          display: block;
+          margin-top: 40px;
+          color: white;
+          text-align: center;
+          font-size: 23px;
+        }
+      }
+      li:nth-child(2){
+        .pook{
+          width: 80px;
+          height: 60px;
+          background: #B3D4FF;;
+          margin: 38px auto 0;
+        }
+        span{
+          display: block;
+          margin-top: 47px;
+          color: white;
+          text-align: center;
+          font-size: 23px;
+        }
+      }
+      li:nth-child(3){
+        .pook{
+          width: 80px;
+          height: 80px;
+          background: #B3D4FF;;
+          margin: 30px auto 0;
+        }
+        span{
+          display: block;
+          margin-top: 35px;
+          color: white;
+          text-align: center;
+          font-size: 23px;
+        }
+      }
+      li:nth-child(4){
+        .pook{
+          width: 80px;
+          height: 45px;
+          background: #B3D4FF;;
+          margin: 45px auto 0;
+        }
+        span{
+          display: block;
+          margin-top: 55px;
+          color: white;
+          text-align: center;
+          font-size: 23px;
+        }
+      }
+      li:nth-child(5){
+        .pook{
+          width: 45px;
+          height: 80px;
+          background: #B3D4FF;;
+          margin: 30px auto 0;
+        }
+        span{
+          display: block;
+          margin-top: 35px;
+          color: white;
+          text-align: center;
+          font-size: 23px;
+        }
+      }
+    }
   }
-
+ 
   .li2{
     float: left;
     width: 220px;
@@ -450,62 +538,8 @@
     margin-left: 10px;
     margin-top: 10px;
   }
-  .imgscale{
-    width: 128px;
-    height: 128px;
-    background: #364858;
-    float: left;
-    margin-left: 7px;
-    margin-top: 20px;
-      p{
-        display: block;
-        margin-top: 130px;
-        color: white;
-        font-size: 23px;
-      }
-      
-  }
-    .span1{
-        width: 60px;
-        height: 80px;
-        background: #B3D4FF;
-        position: relative;
-        top: 30px;
-        left: 36px;
-       
-      }
-      .span2{
-        width: 80px;
-        height: 60px;
-        background: #B3D4FF;
-        position: relative;
-        top: -45px;
-        left: 160px;
-      }
-      .span3{
-        width: 80px;
-        height: 80px;
-        background: #B3D4FF;
-        position: relative;
-        top: -115px;
-        left: 295px;
-      }
-      .span4{
-        width: 80px;
-        height: 45px;
-        background: #B3D4FF;
-        position: relative;
-        top: -175px;
-        left: 428px;
-      }
-      .span5{
-        width: 45px;
-        height: 80px;
-        background: #B3D4FF;
-        position: relative;
-        top: -240px;
-        left: 580px;
-      }
+
+
   .on1{
     border: 1px solid blue;
   }

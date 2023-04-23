@@ -17,7 +17,7 @@ const timestampPadStart = (str:any) => {
 	const mm = timestampPadStart(date.getMinutes())
 	// const ss = timestampPadStart(date.getSeconds())
 	// return `${YYYY}/${MM}/${DD} ${hh}:${mm}:${ss}`
-	return `${YYYY}/${MM}/${DD} ${hh}:${mm}`
+	return `${YYYY}-${MM}-${DD} ${hh}:${mm}`
   }
   
   

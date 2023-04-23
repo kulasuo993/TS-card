@@ -9,6 +9,7 @@
           height="2rem"
           fit="cover"
           position="left"
+          round
           :src="cardData.avatar"
           class="avatar"
         />
@@ -19,7 +20,7 @@
       <p class="created_at"> {{ formatTimestamp(cardData.created_at) }}</p>
       <div class="describe">
         <p>卡图描述</p>
-        <p>复制关键字</p>
+        <p @click="copy">复制关键字</p>
         <p>{{ cardData.words}}</p>
       </div>
     </div>
@@ -29,12 +30,17 @@
 
 <script lang="ts" setup>
   import {reactive,ref,onMounted} from 'vue'
+  import { showSuccessToast , showFailToast , setToastDefaultOptions } from 'vant';
+  setToastDefaultOptions({ duration: 500 });
+
   import { awaitWrap } from '@/utils/index';
   import type { ImageInfo } from '@/api/model/homeModel';
   import { CardInfoApi } from '@/api/home';
   import {formatTimestamp} from '@/utils/filter'
   import back from '@/components/back.vue'
+  import clipboard3 from 'vue-clipboard3';
 
+  const { toClipboard } = clipboard3();
   const props = defineProps({
     id:{
       type:Number,
@@ -70,6 +76,14 @@
   }
   getData()
 
+  const copy = async () => {
+     try {
+        await toClipboard(cardData.words);
+        showSuccessToast('复制成功');
+     } catch (error) {
+      showFailToast('复制失败');
+     }
+    };
 </script>
 
 <style scoped>
@@ -107,6 +121,7 @@
   height: 740px;
   border-radius: 0px 0px 0px 0px;
   opacity: 1;
+  margin-top: 30px;
 }
 .title{
   text-align: left;
@@ -133,7 +148,7 @@
   font-weight: 400;
 }
 .describe p:nth-child(2){
-  margin-top: -20px;
+  margin-top: -35px;
   margin-right: 20px;
   text-align: right;
   font-size: 15px;

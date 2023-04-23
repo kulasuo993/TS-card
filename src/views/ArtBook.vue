@@ -2,21 +2,9 @@
   <div class="about">
       <back :msg=msg></back>
       <div class="inner">
-        <div class="title">
-          <div class="btn_anniu" @click="change(0)" :class="{ newStyle:0===number}">
-            <p>素材库({{ totalList.pic_list_qty }})</p>
-          </div>
-          <div class="btn_anniu" @click="change(1)" :class="{ newStyle:1===number}">
-            <p>卡牌草稿箱({{ totalList.card_list_draft_qty }})</p>
-          </div>
-          <div class="btn_anniu" @click="change(2)" :class="{ newStyle:2===number}">
-            <p>已发布({{ totalList.card_list_publish_qty }})</p>
-          </div>
-        </div>
-          
-        <div class="box">
-            <div v-show='0===number'>
-              <van-pull-refresh
+        <van-tabs v-model:active="activeName" >
+          <van-tab title='素材库' name="a" class="abc">
+            <van-pull-refresh
                 v-model="isLoading"
                 success-text="刷新成功"
                 @refresh="getData"
@@ -25,7 +13,6 @@
                   v-model:loading="listLoading"
                   :finished="listFinished"
                   finishedText='没有更多了哦~'
-                  @refresh="getData"
                 >
                   <ul class="list" >
                     <li v-for="(item,index) in picMyList" :key="index" >
@@ -36,11 +23,13 @@
                   </ul>
                 </van-list>
               </van-pull-refresh>
-             
-            </div>
-          <div v-show='1===number'><p class="CardDraft" v-show="showPop">该类目下暂无作品~</p></div>
-          
-          <div v-show='2===number'>
+          </van-tab>
+
+          <van-tab title="卡牌草稿箱" name="b" class="abc">
+            <p class="CardDraft" v-show="showPop">该类目下暂无作品~</p>
+          </van-tab>
+
+          <van-tab title="已发布" name="c"  class="abc">
             <van-pull-refresh
                 v-model="isLoading1"
                 success-text="刷新成功"
@@ -64,9 +53,8 @@
               </ul>
             </van-list>
             </van-pull-refresh>
-           
-          </div>
-        </div>
+          </van-tab>
+        </van-tabs>
         
       </div>
      
@@ -85,6 +73,7 @@
   import back from '@/components/back.vue'
   
   const msg = ref('我的画集')
+  const activeName = ref('a');
   const number = ref(0)
   const show = ref(false);
   const totalList:myArtCollectionTotalList = reactive({
@@ -113,13 +102,13 @@
    getAllList()
 
 
-   onMounted(() => {
-    setTimeout(() => {
-      //设置定时器
-      getData(true) //自定义事件
-      getSelfList(true)
-    }, 1000);
-  });
+  //  onMounted(() => {
+  //   setTimeout(() => {
+  //     //设置定时器
+  //     getData(true) //自定义事件
+  //     getSelfList(true)
+  //   }, 1000);
+  // });
   
    //第一页
   const listLoading = ref(false); // 是否处于加载状态 默认不处于
@@ -128,6 +117,7 @@
   const picMyList = reactive<MyListItem[]>([])
    
   const getData = async (isRefresh: boolean) => {
+    picMyList.length = 0
     const queryState = reactive({ batch_id : 1 ,page: 1, page_size: totalList.pic_list_qty });
     if (isRefresh) {
       listLoading.value = true;
@@ -141,11 +131,12 @@
       isLoading.value = false;
       listFinished.value = false;
     }
-    Object.assign(picMyList,data.rows)
-    if (picMyList.length === totalList.pic_list_qty) {
-      listFinished.value = true;
-      return;
-    }
+    picMyList.push(...data.rows)
+    listFinished.value = true;
+    // if (picMyList.length === totalList.pic_list_qty) {
+      
+    //   return;
+    // }
   };
 
   const delCard = async (id:number) =>{
@@ -158,6 +149,7 @@
     })
     .then(() => {
       delCard1(id)
+      getData(true)
     })
     .catch(() => {
       showNotify({ type: 'primary', message: '取消删除' });
@@ -179,6 +171,7 @@
   const showPop1 = ref(true)
   const GetSelfList = reactive<SelfListItem[]>([])
   const getSelfList = async (isRefresh: boolean) => {
+    GetSelfList.length = 0
     const queryState = reactive({ card_status : 2 ,page: 1, page_size: totalList.card_list_publish_qty });
     if (isRefresh) {
       listLoading1.value = true;
@@ -192,7 +185,7 @@
       isLoading1.value = false;
       listFinished1.value = false;
     }
-    Object.assign(GetSelfList,data.rows)
+    GetSelfList.push(...data.rows)
     showPop1.value = false
     if (GetSelfList.length === totalList.card_list_publish_qty) {
       listFinished1.value = true;
@@ -207,13 +200,18 @@
   }
 .about{
   width: 100%;
-  
   background-color: #11151B;
 }
 .inner{
   width: 100%;
-  margin-left: 40px;
   margin-top: 90px;
+  --van-tab-text-color:rgb(55, 245, 179);
+  --van-tabs-nav-background:#11151B;
+  --van-tab-active-text-color:rgb(55, 245, 179);
+  --van-tabs-bottom-bar-color:rgb(55, 245, 179);
+    .abc{
+     margin-top: 30px;
+    }
     .title{
       width: 100%;
       height: 100px;
@@ -236,6 +234,7 @@
   }
   .list{
     margin: 0 auto;
+    margin-left: 40px;
     display: flex;
     justify-content:flex-start;
     flex-wrap: wrap;

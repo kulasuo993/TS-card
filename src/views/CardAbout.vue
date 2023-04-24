@@ -1,28 +1,21 @@
 <template>
   
   <div class="about">
-    <back :msg=cardData.card_name></back>
+    <back :msg=msg></back>
     <div class="inner">
-      <div class="top">
-        <van-image
-          width="2rem"
-          height="2rem"
-          fit="cover"
-          position="left"
-          round
-          :src="cardData.avatar"
-          class="avatar"
-        />
-        <span class="p">{{ cardData.nickname }}</span>
-      </div>
       <van-image fit="contain" :src="cardData.img" class="pic" />
-      <p class="title">{{ cardData.title }}</p>
       <p class="created_at"> {{ formatTimestamp(cardData.created_at) }}</p>
       <div class="describe">
         <p>卡图描述</p>
-        <p @click="copy">复制关键字</p>
+        <p @click="copy">复制</p>
         <p>{{ cardData.words}}</p>
       </div>
+      <van-button type="primary" @click="send">主要按钮</van-button>
+      <div v-if="show">
+        <sendShow></sendShow>
+      </div>
+      
+      
     </div>
   
   </div>
@@ -31,15 +24,18 @@
 <script lang="ts" setup>
   import {reactive,ref,onMounted} from 'vue'
   import { showSuccessToast , showFailToast , setToastDefaultOptions } from 'vant';
+  import sendShow from '@/components/send.vue'
   setToastDefaultOptions({ duration: 500 });
 
   import { awaitWrap } from '@/utils/index';
-  import type { ImageInfo } from '@/api/model/homeModel';
-  import { CardInfoApi } from '@/api/home';
+  import type { PicInfoList } from '@/api/model/homeModel';
+  import { PicInfoApi } from '@/api/home';
   import {formatTimestamp} from '@/utils/filter'
   import back from '@/components/back.vue'
   import clipboard3 from 'vue-clipboard3';
 
+  const msg = ref('')
+  const show = ref(false)
   const { toClipboard } = clipboard3();
   const props = defineProps({
     id:{
@@ -48,26 +44,15 @@
     }
   })
   console.log(props.id)
-  const cardData = reactive<ImageInfo>({
-    card_id: 0,
-    nickname: '',
-    avatar: '',
-    img: '',
-    title: '',
-    card_name: '',
-    words: '',
-    likes_number: 0,
-    review_status: 0,
-    card_status: 0,
-    publish_at: 0,
+  const cardData = reactive<PicInfoList>({
     created_at: 0,
-    is_like: 0,
-    can_same_clause: 0,
-    can_del: 0
+    img: '',
+    pic_id: 1,
+    words:''
   })
   const getData = async()=>{
-    const queryState = reactive({card_id :props.id});
-    const [error, data] = await awaitWrap(CardInfoApi(queryState));
+    const queryState = reactive({batch_id:1,pic_id :props.id});
+    const [error, data] = await awaitWrap(PicInfoApi(queryState));
     if (error || !data) {
         return;
     }
@@ -84,6 +69,15 @@
       showFailToast('复制失败');
      }
     };
+  
+  const send = () =>{
+    if(show.value === false){
+      show.value = true
+    }else{
+      show.value = false
+    }
+    console.log(show.value)
+  }
 </script>
 
 <style scoped>
@@ -127,7 +121,6 @@
   text-align: left;
   font-size: 13px;
   color: #FFFFFF;
-  margin-top: 20px;
 }
 .created_at{
   text-align: left;
@@ -138,9 +131,9 @@
 }
 .describe{
   width: 100%;
+  margin-top: 60px;
   border: 1px solid black;
   background: #293D5C;
-  margin-top: 30px;
 }
 .describe p:nth-child(1){
   margin-top: 20px;
@@ -152,21 +145,23 @@
 }
 .describe p:nth-child(2){
   margin-top: -35px;
-  margin-right: 20px;
+  margin-left: 590px;
   text-align: right;
   font-size: 15px;
+  width: 48px;
+  height: 50px;
   color: #1380F0;
   font-weight: 400;
 }
 .describe p:nth-child(3){
   text-align: left;
   margin-top: 20px;
+  margin-bottom: 30px;
   width: 613px;
   height: 100%;
   margin-left: 30px;
   font-size: 23px;
   color: #A5BFE6;
   font-weight: 400;
-  margin-bottom: 30px;
 }
 </style>

@@ -82,11 +82,6 @@
               </li>
             </ul> 
           </div>
-            <!-- <p class="span1"></p>
-            <p class="span2"></p>
-            <p class="span3"></p>
-            <p class="span4"></p>
-            <p class="span5"></p> -->
 
 
       
@@ -97,7 +92,7 @@
     </div>
 
    
-    <van-popup v-model:show="show" closeable round :style="{ padding: '64px' ,right:'60px' }" >
+    <van-popup v-model:show="show" closeable round :style="{ padding: '64px' }" >
       <p class="p1">我的邀请码</p>
       <div class="Btn">
         <van-button type="success" class="btn1">未使用</van-button>

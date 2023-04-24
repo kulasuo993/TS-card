@@ -101,3 +101,10 @@ export type SelfList = {
   rows: SelfListItem[];
   total: number;
 };
+
+export type PicInfoList = {
+  pic_id: number,
+  img: string,
+  words: string,
+  created_at: number
+};

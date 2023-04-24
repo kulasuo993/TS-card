@@ -57,6 +57,16 @@ const routes: Array<RouteRecordRaw> = [
         id: router.params.id ? Number(router.params?.id) : 0,
       };
     },
+  },  
+  {
+    path: '/CardAbout/:id',
+    name: 'CardAbout',
+    component: () => import('../views/CardAbout.vue'),
+    props: (router) => {
+      return {
+        id: router.params.id ? Number(router.params?.id) : 0,
+      };
+    },
   },
 ]
 

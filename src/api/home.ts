@@ -1,6 +1,7 @@
 import type { ImageList, ImageItem ,ImageInfo , 
   codeList , userInfo , picCreat ,
-  myArtCollectionTotalList , MyList ,SelfList} from '@/api/model/homeModel';
+  myArtCollectionTotalList , MyList ,SelfList ,
+  PicInfoList} from '@/api/model/homeModel';
 import {request} from '@/utils/http';
 
 
@@ -16,7 +17,9 @@ enum Api {
   myArtCollectionTotal = '/app/carddiy/user/my-art-collection-total',
   picMyList = '/app/carddiy/pic/my-list',
   carSelfList = '/app/carddiy/card/self-list',
-  picDelete = '/app/carddiy/pic/delete'
+  picDelete = '/app/carddiy/pic/delete',
+  PicInfo = '/app/carddiy/pic/info',
+  PicPublish = '/app/carddiy/pic/publish'
 }
 
 export function ImageListApi(params: { page: number; page_size: number }) {
@@ -133,6 +136,28 @@ export function picDeleteApi(params: {batch_id : number , pic_id :number}) {
   return request(
     {
       url: Api.picDelete,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
+//PicInfo 卡图详情
+export function PicInfoApi(params: {batch_id : number , pic_id :number}) {
+  return request<PicInfoList>(
+    {
+      url: Api.PicInfo,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
+//发布卡图 PicPublish
+export function PicPublishApi(params: {batch_id : number , pic_id :number , title : string}) {
+  return request(
+    {
+      url: Api.PicPublish,
       method: 'POST',
       data: params,
     }

@@ -126,7 +126,7 @@
 .inner{
   .list2{
     width: 95%;
-    height: 1000px;
+    height: 1400px;
     margin-left: 15px;
     margin-top: -30px;
     li{
@@ -169,64 +169,6 @@
        
       }
     }
-    // .pic{
-    //     width: 200px;
-    //     height: 250px;
-    //     background-size: 100%;
-    //     overflow: hidden;
-    //     margin-left: -400px;
-    //     margin-top: 20px;
-    //   }
-    //   .title{
-    //     width: 300px;
-    //     display: block;
-    //     font-size: 32px;
-    //     color: white;
-    //     margin-top: 10px;
-    //     position: relative;
-    //     top: -280px;
-    //     left: 265px;
-    //     text-align: left;
-    //   }
-    //   .card_name{
-    //     display: block;
-    //     font-size: 22px;
-    //     color: #5F7B93;
-    //     position: relative;
-    //     top: -330px;
-    //     right: -20px;
-    //     span{
-    //       color: rgb(165, 191, 230);
-    //     }
-    //   }
-    //   .words{
-    //     text-align: left;
-    //     width: 400px;
-    //     display: block;
-    //     font-size: 22px;
-    //     color: #5F7B93;
-    //     position: relative;
-    //     top: -320px;
-    //     left: 265px;
-    //     text-overflow: -o-ellipsis-lastline;
-    //     overflow: hidden;
-    //     text-overflow: ellipsis;
-    //     display: -webkit-box;
-    //     -webkit-line-clamp: 2;
-    //     line-clamp: 2;
-    //     -webkit-box-orient: vertical;
-    //     span{
-    //       color: rgb(165, 191, 230);
-    //     }
-    //   }
-    //   .name{
-    //     display: block;
-    //     font-size: 22px;
-    //     color: #5F7B93;
-    //     position: relative;
-    //     top: -245px;
-    //     right: -40px;
-    //   }
   }
   .CardDraft{
     font-size: 35px;

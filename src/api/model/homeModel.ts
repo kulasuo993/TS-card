@@ -108,3 +108,24 @@ export type PicInfoList = {
   words: string,
   created_at: number
 };
+//cardFrameHistory
+
+export type cardFrameHistoryListItem = {
+  attack: string,
+  card_class: string,
+  card_type: string,
+  cost: string,
+  health: string,
+  race: string,
+  rarity:string,
+  card_name:string,
+  card_rule:string,
+  frame_id:number,
+  img:string
+};
+
+export type cardFrameHistoryList = {
+  data: cardFrameHistoryListItem[],
+  
+ 
+};

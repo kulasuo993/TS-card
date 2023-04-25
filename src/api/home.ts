@@ -1,7 +1,7 @@
 import type { ImageList, ImageItem ,ImageInfo , 
   codeList , userInfo , picCreat ,
   myArtCollectionTotalList , MyList ,SelfList ,
-  PicInfoList} from '@/api/model/homeModel';
+  PicInfoList , cardFrameHistoryListItem} from '@/api/model/homeModel';
 import {request} from '@/utils/http';
 
 
@@ -21,7 +21,8 @@ enum Api {
   PicInfo = '/app/carddiy/pic/info',
   PicPublish = '/app/carddiy/pic/publish',
   CardPublish = '/app/carddiy/card/publish',
-  CardDelete = '/app/carddiy/card/delete'
+  CardDelete = '/app/carddiy/card/delete',
+  cardFrameHistory = '/app/carddiy/card-frame/history'
 }
 
 export function ImageListApi(params: { page: number; page_size: number }) {
@@ -181,6 +182,17 @@ export function CardDeleteApi(params: {card_id :number}) {
   return request(
     {
       url: Api.CardDelete,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
+//cardFrameHistory 获取历史牌框
+export function cardFrameHistoryApi(params: {game_id :string}) {
+  return request<cardFrameHistoryListItem>(
+    {
+      url: Api.cardFrameHistory,
       method: 'POST',
       data: params,
     }

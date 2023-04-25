@@ -10,10 +10,10 @@
         <p @click="copy">复制</p>
         <p>{{ cardData.words}}</p>
       </div>
-      <van-button type="primary" @click="send">主要按钮</van-button>
-      <div v-if="show">
-        <sendShow></sendShow>
-      </div>
+      <van-button type="primary" @click="send" class="btn2">发送至广场</van-button>
+      
+      <sendShow :isShow="show" @showPop="showPop" :id="id"></sendShow>
+      
       
       
     </div>
@@ -43,7 +43,7 @@
       required:true
     }
   })
-  console.log(props.id)
+  const id = props.id
   const cardData = reactive<PicInfoList>({
     created_at: 0,
     img: '',
@@ -57,7 +57,6 @@
         return;
     }
     Object.assign(cardData,data)
-    console.log(cardData)
   }
   getData()
 
@@ -71,12 +70,10 @@
     };
   
   const send = () =>{
-    if(show.value === false){
-      show.value = true
-    }else{
-      show.value = false
-    }
-    console.log(show.value)
+      show.value = !show.value
+  }
+  const showPop = (data:boolean) =>{
+    show.value = data
   }
 </script>
 
@@ -111,11 +108,13 @@
 }
 
 .pic{
-  width: 616px;
-  height: 740px;
+  width: 710px;
+  height: 840px;
   border-radius: 0px 0px 0px 0px;
   opacity: 1;
-  margin-top: 30px;
+  position: relative;
+  top: 30px;
+  right: 20px;
 }
 .title{
   text-align: left;
@@ -124,10 +123,9 @@
 }
 .created_at{
   text-align: left;
-  /* margin-top: 30px; */
   font-size: 13px;
   color: #819CC5;
-  margin-top: 30px;
+  margin-top: 50px;
 }
 .describe{
   width: 100%;
@@ -163,5 +161,10 @@
   font-size: 23px;
   color: #A5BFE6;
   font-weight: 400;
+}
+.btn2{
+  background-color: rgb(55, 245, 179);
+  position: fixed;
+  right: 80px;
 }
 </style>

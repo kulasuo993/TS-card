@@ -23,6 +23,8 @@
         <p @click="copy">复制关键字</p>
         <p>{{ cardData.words}}</p>
       </div>
+      <van-button type="primary" @click="send" class="btn2">发送至广场</van-button>
+      <sendShow :isShow="show" @showPop="showPop" :id="id"></sendShow>
     </div>
   
   </div>
@@ -39,8 +41,9 @@
   import {formatTimestamp} from '@/utils/filter'
   import back from '@/components/back.vue'
   import clipboard3 from 'vue-clipboard3';
-
+  import sendShow from '@/components/send1.vue'
   const { toClipboard } = clipboard3();
+  const show = ref(false)
   const props = defineProps({
     id:{
       type:Number,
@@ -84,6 +87,13 @@
       showFailToast('复制失败');
      }
     };
+
+    const send = () =>{
+      show.value = !show.value
+    }
+    const showPop = (data:boolean) =>{
+      show.value = data
+    }
 </script>
 
 <style scoped>

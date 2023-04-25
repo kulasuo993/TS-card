@@ -19,7 +19,9 @@ enum Api {
   carSelfList = '/app/carddiy/card/self-list',
   picDelete = '/app/carddiy/pic/delete',
   PicInfo = '/app/carddiy/pic/info',
-  PicPublish = '/app/carddiy/pic/publish'
+  PicPublish = '/app/carddiy/pic/publish',
+  CardPublish = '/app/carddiy/card/publish',
+  CardDelete = '/app/carddiy/card/delete'
 }
 
 export function ImageListApi(params: { page: number; page_size: number }) {
@@ -158,6 +160,27 @@ export function PicPublishApi(params: {batch_id : number , pic_id :number , titl
   return request(
     {
       url: Api.PicPublish,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
+//CardPublish 发布卡牌
+export function CardPublishApi(params: {card_id :number , title : string}) {
+  return request(
+    {
+      url: Api.CardPublish,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+//CardDelete 删除卡牌
+export function CardDeleteApi(params: {card_id :number}) {
+  return request(
+    {
+      url: Api.CardDelete,
       method: 'POST',
       data: params,
     }

@@ -17,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/laboratory/:token',
+    path: '/laboratory',
     name: 'laboratory',
     component: () => import('../views/laboratory.vue'),
     props: (router) => {

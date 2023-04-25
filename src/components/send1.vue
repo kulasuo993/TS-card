@@ -33,10 +33,11 @@
   import { awaitWrap } from '@/utils/index';
   import type { codeList ,userInfo ,picCreat} from '@/api/model/homeModel';
   import { showSuccessToast, showFailToast } from 'vant';
+  import {CardPublishApi } from '@/api/home';
 
   const props = defineProps(['isShow','id'])
   const emits = defineEmits(['showPop'])
-  import {PicPublishApi } from '@/api/home';
+  
   
   const message = ref('')
   const hide = ()=>{
@@ -48,8 +49,8 @@
       showFailToast('请输入描述');
      return
     }
-    const queryState = reactive({ pic_id: props.id, batch_id: 1,title:message.value });
-    const [error, data] = await awaitWrap(PicPublishApi(queryState));
+    const queryState = reactive({ card_id: props.id,title:message.value });
+    const [error, data] = await awaitWrap(CardPublishApi(queryState));
     console.log(data)
     if (error || !data) {
         return;

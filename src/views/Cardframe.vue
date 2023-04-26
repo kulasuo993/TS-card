@@ -6,7 +6,7 @@
         <div class="history">
           <p>历史牌框({{ count }}/{{ list.length }})</p>
           <ul>
-            <li v-for="(item,index) in list" @click="ipt(item)" :class="{on:count === index+1}"> 
+            <li v-for="(item,index) in list" @click="ipt(item,index)" :class="{on:count === index+1}"> 
               <van-image fit="contain" :src="item.img" class="pic" />
             </li>
           </ul>
@@ -24,7 +24,6 @@
             <van-field
               v-model="senList.card_rule"
               rows="2"
-              autosize
               type="textarea"
               maxlength="50"
               placeholder="请输入卡牌效果"
@@ -56,7 +55,7 @@
               <input type="text" 
                 v-model="dataList.rarity" 
                 readonly 
-                placeholder="稀有度" 
+                placeholder="  稀有度" 
                 @click="showPicker = true"
                 class="selected"
               >
@@ -75,7 +74,7 @@
               <input type="text" 
                 v-model="dataList.cost" 
                 readonly 
-                placeholder="法术力" 
+                placeholder="  法术力" 
                 @click="showPicker1 = true"
                 class="selected"
               >
@@ -94,10 +93,10 @@
               <input type="text" 
                 v-model="dataList.card_type" 
                 readonly 
-                placeholder="类型" 
+                placeholder="  类型" 
                 @click="showPicker2 = true"
                 class="selected"
-              >
+              />
               <van-icon name="arrow-down" class="icon" />
               <van-popup v-model:show="showPicker2" round position="bottom">
                 <van-picker
@@ -107,7 +106,7 @@
                 />
               </van-popup>
             </li>
-            <li v-if="dataList.card_type === 'minion'||dataList.card_type === 'weapon'">
+            <li v-if="dataList.card_type === 'minion'||dataList.card_type === 'weapon'||dataList.card_type === '生物'||dataList.card_type === '武器'">
               <p>攻击力</p>
               <input type="text" 
                 v-model="dataList.attack" 
@@ -126,7 +125,7 @@
               </van-popup>
             </li>
 
-            <li v-if="dataList.card_type === 'minion'">
+            <li v-if="dataList.card_type === 'minion'||dataList.card_type === '生物'">
               <p>生命值</p>
               <input type="text" 
                 v-model="dataList.health" 
@@ -144,7 +143,7 @@
                 />
               </van-popup>
             </li>
-            <li v-if="dataList.card_type === 'weapon'||dataList.card_type === 'hero'">
+            <li v-if="dataList.card_type === 'weapon'||dataList.card_type === 'hero'||dataList.card_type === '武器'||dataList.card_type === '英雄'">
               <p>耐久度</p>
               <input type="text" 
                 v-model="dataList.durability" 
@@ -162,7 +161,7 @@
                 />
               </van-popup>
             </li>
-            <li v-if="dataList.card_type === 'minion'">
+            <li v-if="dataList.card_type === 'minion'||dataList.card_type === '生物'">
               <p>随从类型</p>
               <input type="text" 
                 v-model="dataList.race" 
@@ -188,13 +187,15 @@
           <van-button @click="creat" type="primary" class="creat">确认</van-button>
         </div>
         
-        <van-popup v-model:show="showCenter" round :style="{ padding: '64px' }" class="abc">
-          <div class="piccc" >
-            
-          </div> 
-          <van-image fit="contain" :src="PreviewList.img" style="margin-top: -450px;" />
-          <van-button @click="showCenter = false" type="primary" style="margin-top: 80px;">关闭预览</van-button>
-        </van-popup>
+        <div class="showPop">
+          <van-popup v-model:show="showCenter" round :style="{ padding: '64px' }">
+            <div class="piccc" >
+            </div> 
+            <van-image fit="contain" :src="PreviewList.img" class="pic" />
+            <van-button @click="showCenter = false" type="default" class="btn">关闭预览</van-button>
+          </van-popup>
+        </div>
+       
       </div>
      
  
@@ -250,13 +251,30 @@
   }
   getData()
 
-  const ipt = (item:any)=>{
+  const ipt = (item:any,index:number)=>{
+    count.value = index+1
     senList.card_name = item.card_name
     senList.card_rule = item.card_rule
     dataList.card_class = item.data.card_class
     dataList.rarity = item.data.rarity
     dataList.cost = item.data.cost
-    dataList.card_type = item.data.card_type
+    dataList.card_type = ''
+    if(item.data.card_type === 'minion'){
+      dataList.card_type = '生物'
+    }
+    if(item.data.card_type === 'spell'){
+      dataList.card_type = '法术'
+    }
+    if(item.data.card_type === 'weapon'){
+      dataList.card_type = '武器'
+    }
+    if(item.data.card_type === 'hero'){
+      dataList.card_type = '英雄'
+    }
+    if(item.data.card_type === ''){
+      dataList.card_type = ''
+    }
+    console.log(item)
     if(item.data.attack){
       dataList.attack = item.data.attack
     }
@@ -269,7 +287,6 @@
     if(item.data.race){
       dataList.race = item.data.race
     }
-    console.log(senList)
   }
 
   const changeCareer = (item:string)=>{
@@ -289,7 +306,16 @@
 
     const onConfirm2 = ( {selectedOptions}:any ) => {
       showPicker2.value = false;
-      dataList.card_type = selectedOptions[0].value 
+      // typeVal = selectedOptions[0].text 
+      dataList.card_type = selectedOptions[0].text
+      dataList.attack = ''
+      dataList.health = ''
+      dataList.durability = ''
+      dataList.race = ''
+      delete dataList.attack
+      delete dataList.health
+      delete dataList.durability
+      delete dataList.race
     };
     const onConfirm3 = ( {selectedOptions}:any ) => {
       showPicker3.value = false;
@@ -314,6 +340,20 @@
     }
 
     const creat = async()=>{
+      senList.is_preview = 0
+      if(dataList.card_type === '生物'){
+        dataList.card_type = 'minion'
+      }
+      if(dataList.card_type === '法术'){
+        dataList.card_type = 'spell'
+      }
+      if(dataList.card_type === '武器'){
+        dataList.card_type = 'weapon'
+      }
+      if(dataList.card_type === '英雄'){
+        dataList.card_type = 'hero'
+      }
+      console.log(dataList)
       senList.data =JSON.stringify(dataList)
       if(!senList.card_name||!dataList.card_class||!dataList.rarity||!dataList.cost||!dataList.card_type){
         showFailToast('请将标注●的属性写完全哦')
@@ -324,13 +364,38 @@
         return;
       }
       getData()
+      senList.card_name = ''
+      senList.card_rule = ''
+      dataList.card_class = ''
+      dataList.rarity = ''
+      dataList.cost = ''
+      dataList.card_type = ''
+      dataList.card_type = ''
+      dataList.attack = ''
+      dataList.health = ''
+      dataList.durability = ''
+      dataList.race = ''
+      console.log(dataList)
       showSuccessToast('创建成功！')
       
     }
     const Preview = async()=>{
+      if(dataList.card_type === '生物'){
+        dataList.card_type = 'minion'
+      }
+      if(dataList.card_type === '法术'){
+        dataList.card_type = 'spell'
+      }
+      if(dataList.card_type === '武器'){
+        dataList.card_type = 'weapon'
+      }
+      if(dataList.card_type === '英雄'){
+        dataList.card_type = 'hero'
+      }
       senList.data =JSON.stringify(dataList)
       senList.is_preview = 1
       showCenter.value = true
+      console.log(senList)
       if(!senList.card_name||!dataList.card_class||!dataList.rarity||!dataList.cost||!dataList.card_type){
         showFailToast('请将标注●的属性写完全哦')
         return
@@ -340,26 +405,17 @@
         return;
       }
       Object.assign(PreviewList,data)
+      if(dataList.card_type === 'hero'){
+        dataList.card_type = '英雄'
+      }
     }
 </script>
 
 <style scoped lang="less">
 .about{
-  width: 100%;
-  background-color: #11151B;
-  --van-popup-background:1;
-  .piccc{
-    background: linear-gradient(125deg,#37f5b3,#37f5b3 19%,#24a1cb 81%,#24a1cb);
-    border: 0.267vw solid;
-    -o-border-image: linear-gradient(138deg,#8c55fd,#9951de,#ff1616,#db24ac,#db23b2) 2 2;
-    border-image: linear-gradient(138deg,#8c55fd,#9951de,#ff1616,#db24ac,#db23b2) 2 2;
-    border-radius: 0.667vw;
-    filter: blur(60px);
     width: 100%;
-    height: 700px;
-    position: relative;
-}
-
+    background-color: #11151B;
+    --van-popup-background:1;
   }
   .title{
     height: 50px;
@@ -383,8 +439,8 @@
         color: white;
         display: block;
         font-size: 28px;
-        width: 200px;
-        margin-right: 520px;
+        width: 210px;
+        text-align: left;
       }
       ul{
         width: 100%;
@@ -421,8 +477,8 @@
         color: white;
         display: block;
         font-size: 28px;
-        width: 150px;
-        margin-right: 520px;
+        width: 210px;
+        text-align: left;
       }
       p::before{
         width: 10px;
@@ -433,7 +489,7 @@
         background-color: red;
         position: relative;
         top: 25px;
-        left: 140px;
+        left: 130px;
       }
       .input{
         position: relative;
@@ -447,7 +503,8 @@
         color: white;
         display: block;
         font-size: 28px;
-        width: 110px;
+        width: 210px;
+        text-align: left;
       }
       .input{
         position: relative;
@@ -461,7 +518,8 @@
         color: white;
         display: block;
         font-size: 28px;
-        width: 110px;
+        width: 210px;
+        text-align: left;
       }
       p::before{
         width: 10px;
@@ -472,7 +530,7 @@
         background-color: red;
         position: relative;
         top: 28px;
-        left: 90px;
+        left: 70px;
       }
       ul{
         width: 100%;
@@ -506,7 +564,8 @@
           color: white;
           font-size: 25px;
           display: block;
-          margin-right: 110px;
+          width: 210px;
+          text-align: left;
         }
        
         .selected{
@@ -536,7 +595,7 @@
           background-color: red;
           position: relative;
           top: 22px;
-          left: 100px;
+          left: 85px;
         }
       }
       }
@@ -556,6 +615,30 @@
       .show{
         width: 40%;
         background: green;
+      }
+    }
+    .showPop{
+      .piccc{
+          background: linear-gradient(125deg,#37f5b3,#37f5b3 19%,#24a1cb 81%,#24a1cb);
+          border: 0.267vw solid;
+          -o-border-image: linear-gradient(138deg,#8c55fd,#9951de,#ff1616,#db24ac,#db23b2) 2 2;
+          border-image: linear-gradient(138deg,#8c55fd,#9951de,#ff1616,#db24ac,#db23b2) 2 2;
+          border-radius: 0.667vw;
+          filter: blur(60px);
+          width: 100%;
+          height: 700px;
+          position: relative;
+      }
+      .pic{
+        margin-top: -650px;
+      }
+      .btn{
+        width: 400px;
+        height: 100px;
+        position: relative;
+        top: 80px;
+        background: hsla(0,0%,100%,.275);
+        color: #fff;
       }
     }
   }

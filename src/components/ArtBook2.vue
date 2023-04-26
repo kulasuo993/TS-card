@@ -55,7 +55,6 @@
   const id = ref(1)
   const queryState = reactive({ card_status : 1 ,page: 1, page_size: 5});
   const getData = async (isRefresh: boolean) => {
-    emits('resetPubQty')
     showPop1.value = false
     if (isRefresh) {
       queryState.page = 1;

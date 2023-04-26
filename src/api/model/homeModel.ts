@@ -124,8 +124,13 @@ export type cardFrameHistoryListItem = {
   img:string
 };
 
-export type cardFrameHistoryList = {
-  data: cardFrameHistoryListItem[],
-  
- 
+export type cardFrameCreatList = {
+  card_class:string,
+  rarity:string,
+  cost:string,
+  card_type:string,
+  attack?:string,
+  health?:string,
+  durability?:string,
+  race?:string,
 };

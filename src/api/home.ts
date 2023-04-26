@@ -22,7 +22,8 @@ enum Api {
   PicPublish = '/app/carddiy/pic/publish',
   CardPublish = '/app/carddiy/card/publish',
   CardDelete = '/app/carddiy/card/delete',
-  cardFrameHistory = '/app/carddiy/card-frame/history'
+  cardFrameHistory = '/app/carddiy/card-frame/history',
+  cardFrameCreat = '/app/carddiy/card-frame/create'
 }
 
 export function ImageListApi(params: { page: number; page_size: number }) {
@@ -193,6 +194,17 @@ export function cardFrameHistoryApi(params: {game_id :string}) {
   return request<cardFrameHistoryListItem>(
     {
       url: Api.cardFrameHistory,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
+//cardFrameCreat 创建牌框
+export function cardFrameCreatApi(params:any) {
+  return request(
+    {
+      url: Api.cardFrameCreat,
       method: 'POST',
       data: params,
     }

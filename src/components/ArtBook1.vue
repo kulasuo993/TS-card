@@ -55,7 +55,6 @@
   const id = ref(1)
   const queryState = reactive({ batch_id : 1 ,page: 1, page_size: 5 });
   const getData = async (isRefresh: boolean) => {
-    emits('resetQty')
     showPop2.value = false
     if (isRefresh) {
       queryState.page = 1;

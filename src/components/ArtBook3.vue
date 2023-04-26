@@ -53,7 +53,6 @@
   const picMyList = reactive<SelfListItem[]>([])
   const queryState = reactive({ card_status : 2 ,page: 1, page_size: 5});
   const getData = async (isRefresh: boolean) => {
-    emits('resetPubQty')
     showPop1.value = false
     if (isRefresh) {
       queryState.page = 1;

@@ -117,7 +117,7 @@
   import {reactive,ref} from 'vue'
   import { awaitWrap } from '@/utils/index';
   import type { codeList ,userInfo ,picCreat} from '@/api/model/homeModel';
-  import { userCodelistApi , userpicGetConfigApi , getUserInfoApi , picCreatApi} from '@/api/home';
+  import { userCodelistApi , userpicGetConfigApi , getUserInfoApi , picCreatApi , sameClauseApi} from '@/api/home';
   import {formatTimestamp} from '@/utils/filter'
   import navTitle from '@/components/back.vue'
   import { useRouter } from 'vue-router'
@@ -156,6 +156,17 @@
       icon:'',
       lora_id:1,
       title:''
+    }
+  })
+  const sameList:any = reactive({
+    aspect_ratio:'',
+    lora_ids:'',
+    task_words:''
+  })
+  const props = defineProps({
+    id:{
+      type:Number,
+      required:true
     }
   })
   const userInfoList:userInfo = reactive({
@@ -206,7 +217,6 @@
       aspect_ratio:bal.value,
       lora_ids:aal.value
     });
-    console.log(queryState)
     const [error, data] = await awaitWrap(picCreatApi(queryState));
     if (error || !data) {
         return;
@@ -220,6 +230,24 @@
       }
    })
   }
+  
+  const getSameList = async()=>{
+    const queryState = reactive({
+      batch_id :1,
+      card_id:props.id
+    });
+    const [error, data] = await awaitWrap(sameClauseApi(queryState));
+    if (error || !data) {
+        return;
+    }
+    message.value = data.task_words
+    changeID.value =Number(data.lora_ids)
+    changeSize.value = data.aspect_ratio
+    console.log(data)
+  }
+  if(props.id){
+    getSameList()
+  }
   const showPop = ()=>{
     show.value = true;
   }
@@ -231,17 +259,11 @@
   const myCardframe = ()=>{
     router.push({
       name:'Cardframe',
-    // params:{
-    //   token:'login_token=239795be-8890-47dc-b29b-aeff8fd0191c'
-    // }
    })
   }
   const myArtBook = ()=>{
     router.push({
       name:'ArtBook',
-    // params:{
-    //   token:'login_token=239795be-8890-47dc-b29b-aeff8fd0191c'
-    // }
    })
   }
   const changeId = (id:number)=>{

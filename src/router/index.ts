@@ -17,11 +17,22 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/laboratory',
+    path: '/aboutpic/:id',
+    name: 'aboutpic',
+    component: () => import('../views/AboutPic.vue'),
+    props: (router) => {
+      return {
+        id: router.params.id ? Number(router.params?.id) : 0,
+      };
+    },
+  },
+  {
+    path: '/laboratory/:id?',
     name: 'laboratory',
     component: () => import('../views/laboratory.vue'),
     props: (router) => {
       return {
+        token:router.params.token ? Number(router.params?.token) : 0,
         id: router.params.id ? Number(router.params?.id) : 0,
       };
     },

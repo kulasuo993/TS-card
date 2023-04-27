@@ -78,7 +78,7 @@
   };
   const showMore = function(id:number){ 
    router.push({
-    name:'about',
+    name:'aboutpic',
     params:{
       id:id
     }

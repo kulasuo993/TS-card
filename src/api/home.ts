@@ -23,7 +23,8 @@ enum Api {
   CardPublish = '/app/carddiy/card/publish',
   CardDelete = '/app/carddiy/card/delete',
   cardFrameHistory = '/app/carddiy/card-frame/history',
-  cardFrameCreat = '/app/carddiy/card-frame/create'
+  cardFrameCreat = '/app/carddiy/card-frame/create',
+  sameClause = '/app/carddiy/card/same-clause'
 }
 
 export function ImageListApi(params: { page: number; page_size: number }) {
@@ -205,6 +206,17 @@ export function cardFrameCreatApi(params:any) {
   return request(
     {
       url: Api.cardFrameCreat,
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
+//sameClause 卡牌画同款
+export function sameClauseApi(params:{card_id:number}) {
+  return request(
+    {
+      url: Api.sameClause,
       method: 'POST',
       data: params,
     }

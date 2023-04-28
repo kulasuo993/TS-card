@@ -47,44 +47,140 @@
             </li>
           </ul>
         </div>
-        <van-popup v-model:show="showPicker" round position="bottom">
-          <van-picker
-            :columns= options
-            @cancel="showPicker = false"
-            @confirm="onConfirm"
-          />
-        </van-popup>
+
         <div class="five">
           <ul>
-            <li 
-              v-for="(item,index) in stoneList.hearthstone.fixed_attr"
-              @click="openPop(item.options,item.key)"
-            >
-              <p>{{ item.name }}</p>
+            <li>
+              <p>稀有度</p>
               <input type="text" 
+                v-model="dataList.rarity" 
                 readonly 
-                v-model="items[index]"
+                placeholder="  稀有度" 
                 @click="showPicker = true"
                 class="selected"
               >
               <van-icon name="arrow-down" class="icon" />
+              <van-popup v-model:show="showPicker" round position="bottom">
+                <van-picker
+                  :columns="stoneList.hearthstone.fixed_attr[0].options"
+                  @cancel="showPicker = false"
+                  @confirm="onConfirm"
+                />
+              </van-popup>
             </li>
 
-            <li 
-              v-for="(item,index) in arr"
-              @click="openPop(item.options,item.key)"
-              :class="{gg:cd[index] === 1}"
-            >
-              <p>{{ item.name }}</p>
+            <li>
+              <p>法术力</p>
               <input type="text" 
+                v-model="dataList.cost" 
                 readonly 
-                v-model="items2[index]"
-                @click="showPicker = true"
+                placeholder="  法术力" 
+                @click="showPicker1 = true"
                 class="selected"
               >
               <van-icon name="arrow-down" class="icon" />
+              <van-popup v-model:show="showPicker1" round position="bottom">
+                <van-picker
+                  :columns="stoneList.hearthstone.fixed_attr[1].options"
+                  @cancel="showPicker1 = false"
+                  @confirm="onConfirm1"
+                />
+              </van-popup>
+            </li>
+
+            <li>
+              <p>类型</p>
+              <input type="text" 
+                v-model="dataList.card_type" 
+                readonly 
+                placeholder="  类型" 
+                @click="showPicker2 = true"
+                class="selected"
+              />
+              <van-icon name="arrow-down" class="icon" />
+              <van-popup v-model:show="showPicker2" round position="bottom">
+                <van-picker
+                  :columns="stoneList.hearthstone.custom_attr.类型.options"
+                  @cancel="showPicker2 = false"
+                  @confirm="onConfirm2"
+                />
+              </van-popup>
+            </li>
+            <li v-if="dataList.card_type === 'minion'||dataList.card_type === 'weapon'||dataList.card_type === '生物'||dataList.card_type === '武器'">
+              <p>攻击力</p>
+              <input type="text" 
+                v-model="dataList.attack" 
+                readonly 
+                placeholder="类型" 
+                @click="showPicker3 = true"
+                class="selected"
+              >
+              <van-icon name="arrow-down" class="icon" />
+              <van-popup v-model:show="showPicker3" round position="bottom">
+                <van-picker
+                  :columns="stoneList.hearthstone.custom_attr.攻击力.options"
+                  @cancel="showPicker3 = false"
+                  @confirm="onConfirm3"
+                />
+              </van-popup>
+            </li>
+
+            <li v-if="dataList.card_type === 'minion'||dataList.card_type === '生物'">
+              <p>生命值</p>
+              <input type="text" 
+                v-model="dataList.health" 
+                readonly 
+                placeholder="类型" 
+                @click="showPicker4 = true"
+                class="selected"
+              >
+              <van-icon name="arrow-down" class="icon" />
+              <van-popup v-model:show="showPicker4" round position="bottom">
+                <van-picker
+                  :columns="stoneList.hearthstone.custom_attr.生命值.options"
+                  @cancel="showPicker4 = false"
+                  @confirm="onConfirm4"
+                />
+              </van-popup>
+            </li>
+            <li v-if="dataList.card_type === 'weapon'||dataList.card_type === 'hero'||dataList.card_type === '武器'||dataList.card_type === '英雄'">
+              <p>耐久度</p>
+              <input type="text" 
+                v-model="dataList.durability" 
+                readonly 
+                placeholder="耐久度" 
+                @click="showPicker5 = true"
+                class="selected"
+              >
+              <van-icon name="arrow-down" class="icon" />
+              <van-popup v-model:show="showPicker5" round position="bottom">
+                <van-picker
+                  :columns="stoneList.hearthstone.custom_attr.耐久度.options"
+                  @cancel="showPicker5 = false"
+                  @confirm="onConfirm5"
+                />
+              </van-popup>
+            </li>
+            <li v-if="dataList.card_type === 'minion'||dataList.card_type === '生物'">
+              <p>随从类型</p>
+              <input type="text" 
+                v-model="dataList.race" 
+                readonly 
+                placeholder="随从类型" 
+                @click="showPicker6 = true"
+                class="selected"
+              >
+              <van-icon name="arrow-down" class="icon" />
+              <van-popup v-model:show="showPicker6" round position="bottom">
+                <van-picker
+                  :columns="stoneList.hearthstone.custom_attr.随从类型.options"
+                  @cancel="showPicker6 = false"
+                  @confirm="onConfirm6"
+                />
+              </van-popup>
             </li>
           </ul>
+         
         </div>
         <div class="btn">
           <van-button @click="Preview" type="primary" class="show">预览</van-button>
@@ -108,7 +204,7 @@
 </template>
 
 <script lang="ts" setup>
-  import {reactive,ref,onMounted } from 'vue'
+  import {reactive,ref } from 'vue'
   import { awaitWrap } from '@/utils/index';
   import type { cardFrameHistoryListItem } from '@/api/model/homeModel';
   import { cardFrameHistoryApi , cardFrameCreatApi } from '@/api/home';
@@ -116,68 +212,6 @@
   import back from '@/components/back.vue'
   import stoneList from '@/settings/propertiesSetting'
 
-  const cd:any = reactive([
-    {
-      i0:1
-    },
-    {
-      i1:1
-    },
-    {
-      i2:1
-    },
-    {
-      i3:1
-    },
-    {
-      i4:1
-    },
-  ])
-  cd[1]=1
-  cd[2]=1
-  cd[3]=1
-  cd[4]=1
-  const arr:any = ref([
-    stoneList.hearthstone.custom_attr.类型,
-    stoneList.hearthstone.custom_attr.攻击力,
-    stoneList.hearthstone.custom_attr.生命值,
-    stoneList.hearthstone.custom_attr.耐久度,
-    stoneList.hearthstone.custom_attr.随从类型,
-  ])
-  
-  const items:any = reactive([
-    {
-      items0:''
-    },
-    {
-      items1:''
-    }
-  ])
-  const items2:any = reactive([
-    {
-      items0:''
-    },
-    {
-      items1:''
-    },
-    {
-      items2:''
-    },
-    {
-      items3:''
-    },
-    {
-      items4:''
-    }
-  ])
-  items[0] = stoneList.hearthstone.fixed_attr[0].name
-  items[1] = stoneList.hearthstone.fixed_attr[1].name
-  items2[0] = stoneList.hearthstone.custom_attr.类型.name
-  items2[1] = stoneList.hearthstone.custom_attr.攻击力.name
-  items2[2] = stoneList.hearthstone.custom_attr.生命值.name
-  items2[3] = stoneList.hearthstone.custom_attr.耐久度.name
-  items2[4] = stoneList.hearthstone.custom_attr.随从类型.name
-  // console.log(...stoneList.hearthstone.fixed_attr)
   const dataList:any = reactive({})
   const senList = reactive({
     batch_id:1,
@@ -192,12 +226,15 @@
     frame_id:1,
     img:''
   })
-  const options = reactive([])
-  const Key = ref('')
- 
   const showCenter = ref(false)
 
   const showPicker = ref(false);
+  const showPicker1 = ref(false);
+  const showPicker2 = ref(false);
+  const showPicker3 = ref(false);
+  const showPicker4 = ref(false);
+  const showPicker5 = ref(false);
+  const showPicker6 = ref(false);
 
   const msg = ref('我是牌框')
   const list = reactive<cardFrameHistoryListItem[]>([])
@@ -210,6 +247,7 @@
         return;
     }
     Object.assign(list,data)
+    console.log(list)
   }
   getData()
 
@@ -220,55 +258,33 @@
     dataList.card_class = item.data.card_class
     dataList.rarity = item.data.rarity
     dataList.cost = item.data.cost
-    dataList.card_type = item.data.card_type
-    items[0] = item.data.rarity
-    items[1] = item.data.cost
-    items2[1] = stoneList.hearthstone.custom_attr.攻击力.name
-    items2[2] = stoneList.hearthstone.custom_attr.生命值.name
-    items2[3] = stoneList.hearthstone.custom_attr.耐久度.name
-    items2[4] = stoneList.hearthstone.custom_attr.随从类型.name
+    dataList.card_type = ''
     if(item.data.card_type === 'minion'){
-      items2[0] = '生物'
-      cd[1] = 0
-      cd[2] = 0
-      cd[3] = 1
-      cd[4] = 0
+      dataList.card_type = '生物'
     }
     if(item.data.card_type === 'spell'){
-      items2[0] = '法术'
-      cd[1] = 1
-      cd[2] = 1
-      cd[3] = 1
-      cd[4] = 1
+      dataList.card_type = '法术'
     }
     if(item.data.card_type === 'weapon'){
-      items2[0] = '武器'
-      cd[1] = 0
-      cd[2] = 1
-      cd[3] = 0
-      cd[4] = 1
+      dataList.card_type = '武器'
     }
     if(item.data.card_type === 'hero'){
-      items2[0] = '英雄'
-      cd[1] = 1
-      cd[2] = 1
-      cd[3] = 0
-      cd[4] = 1
+      dataList.card_type = '英雄'
     }
+    if(item.data.card_type === ''){
+      dataList.card_type = ''
+    }
+    console.log(item)
     if(item.data.attack){
-      items2[1] = item.data.attack
       dataList.attack = item.data.attack
     }
     if(item.data.health){
-      items2[2] = item.data.health
       dataList.health = item.data.health
     }
     if(item.data.durability){
-      items2[3] = item.data.durability
       dataList.durability = item.data.durability
     }
     if(item.data.race){
-      items2[4] = item.data.race
       dataList.race = item.data.race
     }
   }
@@ -277,72 +293,46 @@
     num.value = item
   }
 
-  const openPop = (data:any,key:any)=>{
-    options.length = 0
-    Object.assign(options,data)
-    Key.value = key
-    showPicker.value = true
-  }
+
     const onConfirm = ( {selectedOptions}:any ) => {
       showPicker.value = false;
-      items2[1] = stoneList.hearthstone.custom_attr.攻击力.name
-      items2[2] = stoneList.hearthstone.custom_attr.生命值.name
-      items2[3] = stoneList.hearthstone.custom_attr.耐久度.name
-      items2[4] = stoneList.hearthstone.custom_attr.随从类型.name
-      if(Key.value === 'rarity'){
-        dataList.rarity = selectedOptions[0].value 
-         items[0] = selectedOptions[0].value
-         console.log(items)
-      } 
-      if(Key.value === 'cost'){
-        dataList.cost = selectedOptions[0].value 
-        items[1] = selectedOptions[0].value
-      } 
-      if(Key.value === 'card_type'){
-        dataList.card_type = selectedOptions[0].value 
-        items2[0] = selectedOptions[0].text
-        if(selectedOptions[0].value === 'minion'){
-          cd[1] = 0
-          cd[2] = 0
-          cd[3] = 1
-          cd[4] = 0
-        }else if(selectedOptions[0].value === 'spell'){
-          cd[1] = 1
-          cd[2] = 1
-          cd[3] = 1
-          cd[4] = 1
-        }else if(selectedOptions[0].value === 'weapon'){
-          cd[1] = 0
-          cd[2] = 1
-          cd[3] = 0
-          cd[4] = 1
-        }else if(selectedOptions[0].value === 'hero'){
-          cd[1] = 1
-          cd[2] = 1
-          cd[3] = 0
-          cd[4] = 1
-        }
-      } 
-      if(Key.value === 'attack'){
-        dataList.attack = selectedOptions[0].value 
-        items2[1] = selectedOptions[0].value
-      } 
-      if(Key.value === 'health'){
-        dataList.health = selectedOptions[0].value 
-        items2[2] = selectedOptions[0].value
-      } 
-      if(Key.value === 'durability'){
-        dataList.durability = selectedOptions[0].value 
-        items2[3] = selectedOptions[0].value
-      } 
-      if(Key.value === 'race'){
-        dataList.race = selectedOptions[0].value 
-        items2[4] = selectedOptions[0].value
-      } 
-      console.log(dataList)
+      dataList.rarity = selectedOptions[0].value 
     };
 
-  
+    const onConfirm1 = ( {selectedOptions}:any ) => {
+      showPicker1.value = false;
+      dataList.cost = selectedOptions[0].value 
+    };
+
+    const onConfirm2 = ( {selectedOptions}:any ) => {
+      showPicker2.value = false;
+      // typeVal = selectedOptions[0].text 
+      dataList.card_type = selectedOptions[0].text
+      dataList.attack = ''
+      dataList.health = ''
+      dataList.durability = ''
+      dataList.race = ''
+      delete dataList.attack
+      delete dataList.health
+      delete dataList.durability
+      delete dataList.race
+    };
+    const onConfirm3 = ( {selectedOptions}:any ) => {
+      showPicker3.value = false;
+      dataList.attack = selectedOptions[0].value 
+    };
+    const onConfirm4 = ( {selectedOptions}:any ) => {
+      showPicker4.value = false;
+      dataList.health = selectedOptions[0].value
+    };
+    const onConfirm5 = ( {selectedOptions}:any ) => {
+      showPicker5.value = false;;
+      dataList.durability = selectedOptions[0].value
+    };
+    const onConfirm6 = ( {selectedOptions}:any ) => {
+      showPicker6.value = false;
+      dataList.race = selectedOptions[0].value
+    };
 
     const cardClass = (data:string) =>{
       console.log(data)
@@ -351,7 +341,19 @@
 
     const creat = async()=>{
       senList.is_preview = 0
-      console.log(senList)
+      if(dataList.card_type === '生物'){
+        dataList.card_type = 'minion'
+      }
+      if(dataList.card_type === '法术'){
+        dataList.card_type = 'spell'
+      }
+      if(dataList.card_type === '武器'){
+        dataList.card_type = 'weapon'
+      }
+      if(dataList.card_type === '英雄'){
+        dataList.card_type = 'hero'
+      }
+      console.log(dataList)
       senList.data =JSON.stringify(dataList)
       if(!senList.card_name||!dataList.card_class||!dataList.rarity||!dataList.cost||!dataList.card_type){
         showFailToast('请将标注●的属性写完全哦')
@@ -365,45 +367,51 @@
       senList.card_name = ''
       senList.card_rule = ''
       dataList.card_class = ''
-      items[0] = '稀有度'
-      items[1] = '法力值'
-      items2[0] = '类型'
-      items2[1] = '攻击力'
-      items2[2] = '生命值'
-      items2[3] = '耐久度'
-      items2[4] = '随从类型'
-      cd[1] = 1
-      cd[2] = 1
-      cd[3] = 1
-      cd[4] = 1
+      dataList.rarity = ''
+      dataList.cost = ''
+      dataList.card_type = ''
+      dataList.card_type = ''
+      dataList.attack = ''
+      dataList.health = ''
+      dataList.durability = ''
+      dataList.race = ''
+      console.log(dataList)
       showSuccessToast('创建成功！')
       
     }
     const Preview = async()=>{
-      senList.is_preview = 1
+      if(dataList.card_type === '生物'){
+        dataList.card_type = 'minion'
+      }
+      if(dataList.card_type === '法术'){
+        dataList.card_type = 'spell'
+      }
+      if(dataList.card_type === '武器'){
+        dataList.card_type = 'weapon'
+      }
+      if(dataList.card_type === '英雄'){
+        dataList.card_type = 'hero'
+      }
       senList.data =JSON.stringify(dataList)
+      senList.is_preview = 1
+      showCenter.value = true
       console.log(senList)
-      
       if(!senList.card_name||!dataList.card_class||!dataList.rarity||!dataList.cost||!dataList.card_type){
         showFailToast('请将标注●的属性写完全哦')
         return
       }
-      showCenter.value = true
       const [error, data] = await awaitWrap(cardFrameCreatApi(senList));
       if (error || !data) {
         return;
       }
       Object.assign(PreviewList,data)
+      if(dataList.card_type === 'hero'){
+        dataList.card_type = '英雄'
+      }
     }
 </script>
 
 <style scoped lang="less">
-.gg{
-  display: none;
-}
-.bb{
-  display: block;
-}
 .about{
     width: 100%;
     background-color: #11151B;
@@ -574,6 +582,22 @@
             color: #0f8a80;
         }
         }
+      li:nth-child(1),li:nth-child(4){
+        margin-left: 0;
+      }
+      li:nth-child(1),li:nth-child(2),li:nth-child(3){
+          p::before{
+          width: 10px;
+          height: 10px;
+          border-radius: 100px;
+          content: '';
+          display: block;
+          background-color: red;
+          position: relative;
+          top: 22px;
+          left: 85px;
+        }
+      }
       }
    
       

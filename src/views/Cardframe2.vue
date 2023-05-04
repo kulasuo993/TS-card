@@ -71,7 +71,7 @@
             </li>
 
             <li 
-              v-for="(item,index) in Object.values(stoneList.hearthstone.custom_attr)"
+              v-for="(item,index) in arr"
               @click="openPop(item.options,item.key)"
               :class="{gg:cd[index] === 1}"
             >
@@ -115,7 +115,7 @@
   import { showSuccessToast, showFailToast } from 'vant';
   import back from '@/components/back.vue'
   import stoneList from '@/settings/propertiesSetting'
- 
+
   const cd:any = reactive([
     {
       i0:1
@@ -137,7 +137,14 @@
   cd[2]=1
   cd[3]=1
   cd[4]=1
-  // const arr = Object.values(stoneList.hearthstone.custom_attr)
+  const arr:any = ref([
+    stoneList.hearthstone.custom_attr.类型,
+    stoneList.hearthstone.custom_attr.攻击力,
+    stoneList.hearthstone.custom_attr.生命值,
+    stoneList.hearthstone.custom_attr.耐久度,
+    stoneList.hearthstone.custom_attr.随从类型,
+  ])
+  
   const items:any = reactive([
     {
       items0:''
@@ -206,12 +213,6 @@
   }
   getData()
 
-  const ChooseFun = (one:number,two:number,three:number,four:number)=>{
-    cd[1] = one
-    cd[2] = two
-    cd[3] = three
-    cd[4] = four
-  }
   const ipt = (item:any,index:number)=>{
     count.value = index+1
     senList.card_name = item.card_name
@@ -226,22 +227,33 @@
     items2[2] = stoneList.hearthstone.custom_attr.生命值.name
     items2[3] = stoneList.hearthstone.custom_attr.耐久度.name
     items2[4] = stoneList.hearthstone.custom_attr.随从类型.name
-    
     if(item.data.card_type === 'minion'){
       items2[0] = '生物'
-      ChooseFun(0,0,1,0)
+      cd[1] = 0
+      cd[2] = 0
+      cd[3] = 1
+      cd[4] = 0
     }
     if(item.data.card_type === 'spell'){
       items2[0] = '法术'
-      ChooseFun(1,1,1,1)
+      cd[1] = 1
+      cd[2] = 1
+      cd[3] = 1
+      cd[4] = 1
     }
     if(item.data.card_type === 'weapon'){
       items2[0] = '武器'
-      ChooseFun(0,1,0,1)
+      cd[1] = 0
+      cd[2] = 1
+      cd[3] = 0
+      cd[4] = 1
     }
     if(item.data.card_type === 'hero'){
       items2[0] = '英雄'
-      ChooseFun(1,1,0,1)
+      cd[1] = 1
+      cd[2] = 1
+      cd[3] = 0
+      cd[4] = 1
     }
     if(item.data.attack){
       items2[1] = item.data.attack
@@ -290,13 +302,25 @@
         dataList.card_type = selectedOptions[0].value 
         items2[0] = selectedOptions[0].text
         if(selectedOptions[0].value === 'minion'){
-          ChooseFun(0,0,1,0)
+          cd[1] = 0
+          cd[2] = 0
+          cd[3] = 1
+          cd[4] = 0
         }else if(selectedOptions[0].value === 'spell'){
-          ChooseFun(1,1,1,1)
+          cd[1] = 1
+          cd[2] = 1
+          cd[3] = 1
+          cd[4] = 1
         }else if(selectedOptions[0].value === 'weapon'){
-          ChooseFun(0,1,0,1)
+          cd[1] = 0
+          cd[2] = 1
+          cd[3] = 0
+          cd[4] = 1
         }else if(selectedOptions[0].value === 'hero'){
-          ChooseFun(1,1,0,1)
+          cd[1] = 1
+          cd[2] = 1
+          cd[3] = 0
+          cd[4] = 1
         }
       } 
       if(Key.value === 'attack'){
@@ -348,7 +372,10 @@
       items2[2] = '生命值'
       items2[3] = '耐久度'
       items2[4] = '随从类型'
-      ChooseFun(1,1,1,1)
+      cd[1] = 1
+      cd[2] = 1
+      cd[3] = 1
+      cd[4] = 1
       showSuccessToast('创建成功！')
       
     }
